@@ -1,36 +1,25 @@
-// js/keyboard.js — Maps keyboard keys to calculator actions
+document.addEventListener("keydown", (e) => {
 
-document.addEventListener('keydown', (e) => {
+    if (e.key >= "0" && e.key <= "9") {
+        Calculator.handleNumber(e.key);
+    }
 
-  // Number keys 0–9
-  if (e.key >= '0' && e.key <= '9') {
-    Calculator.handleNumber(e.key);
-    Display.update(Calculator.currentValue);
-  }
+    if (e.key === "+") Calculator.handleOperator("+");
+    if (e.key === "-") Calculator.handleOperator("-");
+    if (e.key === "*") Calculator.handleOperator("x");
 
-  // Operators
-  if (e.key === '+') Calculator.handleOperator('+');
-  if (e.key === '-') Calculator.handleOperator('-');
-  if (e.key === '*') Calculator.handleOperator('×');
-  if (e.key === '/') {
-    e.preventDefault(); // prevents browser's "find" shortcut
-    Calculator.handleOperator('÷');
-  }
+    if (e.key === "/") {
+        e.preventDefault();
+        Calculator.handleOperator("/");
+    }
 
-  // Equals — Enter key
-  if (e.key === 'Enter' || e.key === '=') {
-    Calculator.calculate();
-    Display.update(Calculator.currentValue);
-    History.add(Calculator.lastExpression, Calculator.currentValue);
-    History.render();
-  }
+    if (e.key === "Enter" || e.key === "=") {
+        Calculator.calculate();
+    }
 
-  // Decimal point
-  if (e.key === '.') Calculator.handleDecimal();
+    if (e.key === ".") Calculator.handleDecimal();
 
-  // Backspace — delete last character
-  if (e.key === 'Backspace') Calculator.deleteLast();
+    if (e.key === "Backspace") Calculator.deleteLast();
 
-  // Escape — All Clear
-  if (e.key === 'Escape') Calculator.clear();
+    if (e.key === "Escape") Calculator.clear();
 });

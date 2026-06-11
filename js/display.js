@@ -3,15 +3,26 @@
 const Display = {
 
     update(value) {
-        console.log("Display:", value);
+        const resultEl = document.getElementById("result");
+        if (!resultEl) return;
+
+        resultEl.textContent = value;
+
+        if (String(value).startsWith("Error")) {
+            resultEl.classList.add("error");
+        } else {
+            resultEl.classList.remove("error");
+        }
     },
 
-    showExpression(expression) {
-        console.log("Expression:", expression);
+    showExpression(expr) {
+        const exprEl = document.getElementById("expression");
+        if (!exprEl) return;
+
+        exprEl.textContent = expr;
     },
 
-    showError(message) {
-        console.error(message);
+    showError(msg) {
+        this.update("Error: " + msg);
     }
-
 };
