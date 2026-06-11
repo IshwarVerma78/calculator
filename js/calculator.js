@@ -95,4 +95,43 @@ const Calculator = {
         this.operator = null;
         this.shouldResetDisplay = false;
     }
+    toggleSign: function() {
+
+    if (this.currentValue !== "0") {
+
+        if (this.currentValue.startsWith("-")) {
+            this.currentValue = this.currentValue.slice(1);
+        } else {
+            this.currentValue = "-" + this.currentValue;
+        }
+    }
+},
+
+percentage: function() {
+    this.currentValue =
+        String(parseFloat(this.currentValue) / 100);
+},
+
+handleDecimal: function() {
+
+    if (this.shouldResetDisplay) {
+
+        this.currentValue = "0.";
+        this.shouldResetDisplay = false;
+
+    } else if (!this.currentValue.includes(".")) {
+
+        this.currentValue += ".";
+    }
+},
+
+deleteLast: function() {
+
+    if (this.currentValue.length > 1) {
+        this.currentValue =
+            this.currentValue.slice(0, -1);
+    } else {
+        this.currentValue = "0";
+    }
+}
 };
