@@ -1,0 +1,109 @@
+/* ============================================================
+   style.css — Global resets, CSS variables, body layout
+   iOS-inspired dark calculator theme
+   ============================================================ */
+
+/* ── CSS Custom Properties ──────────────────────────────────
+   All design tokens live here. Change only this block to retheme.
+   ─────────────────────────────────────────────────────────── */
+:root {
+  /* Background colours */
+  --bg-page:           #1c1c1e;
+  --calculator-bg:     #2c2c2e;
+  --display-bg:        #1c1c1e;
+
+  /* Button colours */
+  --btn-number-bg:     #3a3a3c;
+  --btn-operator-bg:   #ff9f0a;
+  --btn-function-bg:   #636366;
+  --btn-equals-bg:     #ff9f0a;
+
+  /* Text colours */
+  --text-primary:      #ffffff;
+  --text-result:       #ffffff;
+  --text-expression:   rgba(255, 255, 255, 0.55);
+  --text-history:      rgba(255, 255, 255, 0.38);
+
+  /* Layout tokens */
+  --btn-size:          80px;
+  --btn-gap:           12px;
+  --border-radius-btn: 50%;
+
+  /* Typography */
+  --font-size-result:  3rem;
+  --font-size-expr:    1.1rem;
+
+  /* Error colour */
+  --color-error:       #ff453a;
+}
+
+/* ── Universal Reset ────────────────────────────────────────
+   Remove default margin/padding and use border-box sizing
+   so widths include padding and borders.
+   ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ── Base Typography ────────────────────────────────────────
+   Use SF Pro / system-ui stack to mirror the iOS aesthetic.
+   ─────────────────────────────────────────────────────────── */
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+               'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Page Shell ─────────────────────────────────────────────
+   Full-viewport dark background; centre the calculator both
+   horizontally and vertically using flexbox.
+   ─────────────────────────────────────────────────────────── */
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Prevent page scroll from interfering with the calculator */
+  overflow: hidden;
+}
+
+/* ── Focus Outline Reset ────────────────────────────────────
+   Remove default browser focus rings on buttons (we rely on
+   the :active brightness/scale for feedback instead).
+   ─────────────────────────────────────────────────────────── */
+button:focus {
+  outline: none;
+}
+
+/* ── List Reset ─────────────────────────────────────────────
+   History list uses a <ul>; strip default bullet styles.
+   ─────────────────────────────────────────────────────────── */
+ul {
+  list-style: none;
+}
+
+/* ── Responsive Overrides ───────────────────────────────────
+   Scale down button size and gaps on small screens so the
+   calculator fits without horizontal scrolling.
+   ─────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --btn-size: 70px;
+    --btn-gap:  10px;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --btn-size: 62px;
+    --btn-gap:  8px;
+  }
+}

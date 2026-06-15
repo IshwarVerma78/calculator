@@ -1,0 +1,288 @@
+/* ============================================================
+   calculator.css — Calculator component, grid, buttons
+   All layout and visual styling for the calculator widget.
+   ============================================================ */
+
+/* ── Wrapper ────────────────────────────────────────────────
+   The outer shell that holds history, display and button grid.
+   Fixed width derived from button sizes to keep the layout crisp.
+   ─────────────────────────────────────────────────────────── */
+.calculator-wrapper {
+  background-color: var(--calculator-bg);
+  border-radius: 40px;
+  padding: 24px 20px 20px;
+  width: calc(var(--btn-size) * 4 + var(--btn-gap) * 3 + 40px);
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.7),
+    0 0 0 0.5px rgba(255, 255, 255, 0.06);
+  /* Smooth resize when CSS variables change at breakpoints */
+  transition: width 0.2s ease;
+}
+
+/* Responsive width overrides */
+@media (max-width: 480px) {
+  .calculator-wrapper {
+    border-radius: 30px;
+    padding: 20px 16px 16px;
+    width: 320px;
+  }
+}
+
+@media (max-width: 380px) {
+  .calculator-wrapper {
+    border-radius: 24px;
+    padding: 16px 14px 14px;
+    width: 290px;
+  }
+}
+
+/* ── History Panel ──────────────────────────────────────────
+   Scrollable strip above the display showing the last 5
+   calculations. Text is faded to stay secondary.
+   ─────────────────────────────────────────────────────────── */
+.history-panel {
+  min-height: 64px;
+  max-height: 130px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  /* Custom scrollbar — thin and subtle */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.history-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.history-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.history-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+/* ── History List ───────────────────────────────────────────
+   Each entry is right-aligned and dimmed. The most recent
+   entry is rendered first (unshift logic in history.js).
+   ─────────────────────────────────────────────────────────── */
+.history-list {
+  width: 100%;
+}
+
+.history-list li {
+  color: var(--text-history);
+  font-size: 0.82rem;
+  text-align: right;
+  padding: 2px 4px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  /* Truncate long expressions gracefully */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Slide-in animation for new entries */
+  animation: historyFadeIn 0.25s ease;
+}
+
+@keyframes historyFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Display Area ───────────────────────────────────────────
+   Two-line display: expression (top, faded) + result (bottom,
+   large). Uses flex so the content always sits at the bottom.
+   ─────────────────────────────────────────────────────────── */
+.display {
+  background-color: var(--display-bg);
+  border-radius: 16px;
+  padding: 14px 20px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  min-height: 110px;
+  overflow: hidden;
+}
+
+/* Expression line — shows the pending operation e.g. "5 + 3 ×" */
+#expression {
+  color: var(--text-expression);
+  font-size: var(--font-size-expr);
+  font-weight: 400;
+  min-height: 1.4em;
+  text-align: right;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s ease;
+}
+
+/* Result line — shows current value or final result */
+#result {
+  color: var(--text-result);
+  font-size: var(--font-size-result);
+  font-weight: 300;
+  text-align: right;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  /* Shrink font for long numbers automatically */
+  /* (handled in display.js via class; CSS fallback below) */
+  text-overflow: clip;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  transition: font-size 0.1s ease, color 0.15s ease;
+}
+
+/* Error state: red text, slightly smaller to fit the word "Error" */
+#result.error {
+  color: var(--color-error);
+  font-size: 1.6rem;
+}
+
+/* ── Button Grid ────────────────────────────────────────────
+   4-column CSS grid. Rows are auto-sized to the button height.
+   The zero button spans 2 columns (set directly on the element).
+   ─────────────────────────────────────────────────────────── */
+.btn-grid {
+  display: grid;
+  grid-template-columns: repeat(4, var(--btn-size));
+  grid-auto-rows: var(--btn-size);
+  gap: var(--btn-gap);
+  justify-content: center;
+}
+
+/* ── Base Button ────────────────────────────────────────────
+   Shared styles for every calculator button. Roles (number /
+   operator / function / equals) are distinguished by modifier
+   classes that set background-color.
+   ─────────────────────────────────────────────────────────── */
+.btn {
+  width: var(--btn-size);
+  height: var(--btn-size);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1.45rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  border-radius: var(--border-radius-btn); /* 50% — circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Smooth colour and transform transitions */
+  transition:
+    filter    0.08s ease,
+    transform 0.08s ease,
+    box-shadow 0.15s ease;
+  /* Prevent text selection on rapid clicking */
+  user-select: none;
+  /* Tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+  /* Subtle inner border to add depth */
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* ── Ripple pseudo-element (purely CSS ripple on click) ──── */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.btn:active::after {
+  opacity: 1;
+  transition: none;
+}
+
+/* ── Button Role Colours ─────────────────────────────────── */
+.btn-number {
+  background-color: var(--btn-number-bg);
+}
+
+.btn-operator {
+  background-color: var(--btn-operator-bg);
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.btn-function {
+  background-color: var(--btn-function-bg);
+  font-size: 1.3rem;
+}
+
+.btn-equals {
+  background-color: var(--btn-equals-bg);
+  font-size: 1.6rem;
+}
+
+/* ── Button States ──────────────────────────────────────────
+   Hover: slight brighten; Active: brighten more + scale down
+   to give a physical press feel.
+   ─────────────────────────────────────────────────────────── */
+.btn:hover {
+  filter: brightness(1.15);
+}
+
+.btn:active {
+  filter: brightness(1.4);
+  transform: scale(0.95);
+}
+
+/* ── Zero Button ────────────────────────────────────────────
+   Spans two grid columns, pill shape, text left-aligned.
+   Width recalculated to include the gap between two cells.
+   ─────────────────────────────────────────────────────────── */
+.btn-zero {
+  grid-column: span 2;
+  width: calc(var(--btn-size) * 2 + var(--btn-gap));
+  border-radius: 40px;
+  /* Override flex centering so "0" sits to the left like iOS */
+  justify-content: flex-start;
+  padding-left: 28px;
+  font-size: 1.45rem;
+}
+
+/* ── Operator Active State ──────────────────────────────────
+   Visual indicator that an operator is currently selected —
+   inverts colours (white bg, orange text) similar to iOS calc.
+   ─────────────────────────────────────────────────────────── */
+.btn-operator.is-active,
+.btn-equals.is-active {
+  background-color: var(--text-primary);
+  color: var(--btn-operator-bg);
+}
+
+/* ── Separator Line ─────────────────────────────────────────
+   Optional thin rule between display and buttons.
+   ─────────────────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 0 4px 16px;
+  border-radius: 1px;
+}
+
+/* ── App Title / Branding ───────────────────────────────────
+   Small label above the calculator wrapper (optional, subtle).
+   ─────────────────────────────────────────────────────────── */
+.app-title {
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  margin-bottom: 20px;
+}
